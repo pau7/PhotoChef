@@ -1,0 +1,37 @@
+# Archivos y carpetas de .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+*.vs/
+*.vscode/
+*.idea/
+.DS_Store
+*.swp
+
+# Archivos de configuración local de sistema operativo
+*.config
+*.db
+
+# Archivos generados automáticamente por Docker
+.dockerignore
+
+# Docker
+docker-compose.override.yml
+*.dockerfile
+.env
+
+# Archivos de paquetes NuGet
+*.nupkg
+.nuget/packages/
+
+# Archivos y carpetas generados por herramientas de compilación
+artifacts/
+dist/
+publish/
+out/
+
+# Archivos de logs
+*.log
