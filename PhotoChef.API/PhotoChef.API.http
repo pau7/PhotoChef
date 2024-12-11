@@ -1,0 +1,6 @@
+@PhotoChef.API_HostAddress = http://localhost:5231
+
+GET {{PhotoChef.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
