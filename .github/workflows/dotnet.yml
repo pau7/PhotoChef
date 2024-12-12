@@ -1,9 +1,9 @@
-name: .NET CI
+name: .NET Build and Test
 
 on:
   push:
     branches:
-      - main 
+      - main
   pull_request:
     branches:
       - main
@@ -19,10 +19,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x 
+        dotnet-version: '8.0.41'
 
     - name: Restore dependencies
       run: dotnet restore
 
+    - name: Build solution
+      run: dotnet build --no-restore
+
     - name: Run tests
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test PhotoChef.Tests/PhotoChef.Tests.csproj --no-build --verbosity normal
