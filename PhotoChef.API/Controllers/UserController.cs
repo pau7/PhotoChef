@@ -73,16 +73,5 @@ namespace PhotoChef.API.Controllers
 
             return Ok(new { Token = token });
         }
-
-        [HttpGet("{userId}/recipebooks")]
-        public async Task<IActionResult> GetRecipeBooks(int userId)
-        {
-            var recipeBooks = await _userRepository.GetRecipeBooksForUserAsync(userId);
-
-            if (recipeBooks == null || !recipeBooks.Any())
-                return NotFound(new { Message = "No recipe books found for this user." });
-
-            return Ok(recipeBooks);
-        }
     }
 }

@@ -14,17 +14,20 @@ namespace PhotoChef.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<Recipe>> GetAllRecipesAsync()
+        public async Task<List<Recipe>> GetAllRecipesAsync(int userId)
         {
+
             return await _context.Recipes
                 .Include(r => r.Ingredients)
+                .Where(r => r.UserId == userId)
                 .ToListAsync();
         }
 
-        public async Task<Recipe?> GetRecipeByIdAsync(int id)
+        public async Task<Recipe?> GetRecipeByIdAsync(int id, int userId)
         {
             return await _context.Recipes
                 .Include(r => r.Ingredients)
+                .Where (r => r.UserId == userId)
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
@@ -36,27 +39,13 @@ namespace PhotoChef.Infrastructure.Repositories
 
         public async Task UpdateRecipeAsync(Recipe recipe)
         {
-            var existingRecipe = await _context.Recipes
-                .Include(r => r.Ingredients)
-                .FirstOrDefaultAsync(r => r.Id == recipe.Id);
-
-            if (existingRecipe != null)
-            {
-                existingRecipe.Name = recipe.Name;
-                existingRecipe.Description = recipe.Description;
-                existingRecipe.Ingredients = recipe.Ingredients;
-                existingRecipe.Instructions = recipe.Instructions;
-                existingRecipe.Allergens = recipe.Allergens;
-                existingRecipe.ImageUrl = recipe.ImageUrl;
-
-                _context.Recipes.Update(existingRecipe);
-                await _context.SaveChangesAsync();
-            }
+            _context.Recipes.Update(recipe);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteRecipeAsync(int id)
+        public async Task DeleteRecipeAsync(int id, int userId)
         {
-            var recipe = await _context.Recipes.FirstOrDefaultAsync(r => r.Id == id);
+            var recipe = await _context.Recipes.Where(x=>x.UserId == userId).FirstOrDefaultAsync(r => r.Id == id);
             if (recipe != null)
             {
                 _context.Recipes.Remove(recipe);

@@ -47,11 +47,5 @@ namespace PhotoChef.Infrastructure.Repositories
             var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
             return verificationResult == PasswordVerificationResult.Success;
         }
-        public async Task<List<RecipeBook>> GetRecipeBooksForUserAsync(int userId)
-        {            
-            return await _context.RecipeBooks
-                .Where(rb => rb.Id % userId == 0)
-                .ToListAsync();
-        }
     }
 }

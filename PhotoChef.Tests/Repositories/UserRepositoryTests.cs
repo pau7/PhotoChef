@@ -118,21 +118,5 @@ namespace PhotoChef.Tests.Repositories
             result.Should().BeFalse();
         }
 
-        [Fact]
-        public async Task GetRecipeBooksForUserAsync_ShouldReturnBooks_ForGivenUserId()
-        {            
-            var books = new List<RecipeBook>
-            {
-                new RecipeBook { Id = 2, Title = "Book 1", Author="Peter", CoverImageUrl="cover.png" },
-                new RecipeBook { Id = 4, Title = "Book 2", Author="Peter", CoverImageUrl="cover.png" }
-            };
-            _context.RecipeBooks.AddRange(books);
-            await _context.SaveChangesAsync();
-            
-            var result = await _userRepository.GetRecipeBooksForUserAsync(2);
-            
-            result.Should().HaveCount(2);
-            result.Select(b => b.Title).Should().Contain(new[] { "Book 1", "Book 2" });
-        }
     }
 }

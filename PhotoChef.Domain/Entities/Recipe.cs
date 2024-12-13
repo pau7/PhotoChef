@@ -15,6 +15,7 @@ namespace PhotoChef.Domain.Entities
         public string ImageUrl { get; set; }
 
         public int RecipeBookId { get; set; }
+        public int UserId { get; set; }
 
 
     }

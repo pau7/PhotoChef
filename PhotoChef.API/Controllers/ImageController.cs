@@ -95,7 +95,7 @@
                     .Select(file => Path.GetFileName(file))
                     .ToList();
 
-                var associatedImages = (await recipeRepository.GetAllRecipesAsync())
+                var associatedImages = (await recipeRepository.GetAllRecipesAsync(userId))
                     .Where(r => !string.IsNullOrEmpty(r.ImageUrl) && r.ImageUrl.Contains($"/images/{userId}/"))
                     .Select(r => Path.GetFileName(r.ImageUrl))
                     .ToList();

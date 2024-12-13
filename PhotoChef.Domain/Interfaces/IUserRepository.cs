@@ -8,6 +8,5 @@ namespace PhotoChef.Domain.Interfaces
         Task<User> RegisterUserAsync(User user);
         Task<bool> UserExistsAsync(string username);
         Task<bool> ValidateUserAsync(string username, string password);
-        Task<List<RecipeBook>> GetRecipeBooksForUserAsync(int userId);
     }
 }

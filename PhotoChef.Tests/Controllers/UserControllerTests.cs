@@ -125,45 +125,6 @@ namespace PhotoChef.Tests.Controllers
             response.Should().NotBeNull();
             response.Should().Contain("Invalid username or password.");
         }
-
-
-        [Fact]
-        public async Task GetRecipeBooks_ShouldReturnOk_WhenBooksExist()
-        {
-            var userId = 1;
-            var books = new List<RecipeBook>
-            {
-                new RecipeBook { Id = 1, Title = "Book 1", UserId = userId },
-                new RecipeBook { Id = 2, Title = "Book 2", UserId = userId }
-            };
-
-            _mockRepo.Setup(repo => repo.GetRecipeBooksForUserAsync(userId)).ReturnsAsync(books);
-
-            var result = await _controller.GetRecipeBooks(userId);
-
-            var okResult = result as OkObjectResult;
-            okResult.Should().NotBeNull();
-            okResult!.StatusCode.Should().Be(StatusCodes.Status200OK);
-            var response = okResult.Value as List<RecipeBook>;
-            response.Should().HaveCount(2);
-        }
-
-        [Fact]
-        public async Task GetRecipeBooks_ShouldReturnNotFound_WhenNoBooksExist()
-        {
-            var userId = 1;
-
-            _mockRepo.Setup(repo => repo.GetRecipeBooksForUserAsync(userId)).ReturnsAsync(new List<RecipeBook>());
-
-            var result = await _controller.GetRecipeBooks(userId);
-
-            var notFoundResult = result as NotFoundObjectResult;
-            notFoundResult.Should().NotBeNull();
-            notFoundResult!.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-            var response = notFoundResult.Value.ToString();
-            response.Should().NotBeNull();
-            response.Should().Contain("No recipe books found for this user.");
-        }
     }
     
 }

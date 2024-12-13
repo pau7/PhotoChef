@@ -37,7 +37,8 @@ namespace PhotoChef.Tests.Repositories
                 {
                     new Ingredient { Name = "Flour", Quantity = "2 cups" },
                     new Ingredient { Name = "Sugar", Quantity = "1 cup" }
-                }
+                },
+                UserId = 1
             };
 
             await _recipeRepository.AddRecipeAsync(recipe);
@@ -46,17 +47,18 @@ namespace PhotoChef.Tests.Repositories
         }
 
         [Fact]
-        public async Task GetAllRecipesAsync_ShouldReturnAllRecipes()
+        public async Task GetAllRecipesFromUserAsync_ShouldReturnAllRecipes()
         {
             var recipes = new List<Recipe>
             {
-                new Recipe { Name = "Recipe 1", Description = "Description 1", Instructions="Instructions 1", ImageUrl="test.png" },
-                new Recipe { Name = "Recipe 2", Description = "Description 2", Instructions="Instructions 2", ImageUrl="test.png" }
+                new Recipe { Name = "Recipe 1", Description = "Description 1", Instructions="Instructions 1", ImageUrl="test.png",UserId=1 },
+                new Recipe { Name = "Recipe 2", Description = "Description 2", Instructions="Instructions 2", ImageUrl="test.png",UserId=1 },
+                new Recipe { Name = "Recipe 3", Description = "Description 3", Instructions="Instructions 3", ImageUrl="test.png",UserId=2 }
             };
             await _context.Recipes.AddRangeAsync(recipes);
             await _context.SaveChangesAsync();
 
-            var result = await _recipeRepository.GetAllRecipesAsync();
+            var result = await _recipeRepository.GetAllRecipesAsync(1);
 
             result.Should().HaveCount(2);
             result.Select(r => r.Name).Should().Contain(new[] { "Recipe 1", "Recipe 2" });
@@ -65,11 +67,11 @@ namespace PhotoChef.Tests.Repositories
         [Fact]
         public async Task GetRecipeByIdAsync_ShouldReturnRecipe_WhenIdExists()
         {
-            var recipe = new Recipe { Name = "Recipe 1", Description = "Description 1", Instructions="Instructions 1", ImageUrl="test.png" };
+            var recipe = new Recipe { Name = "Recipe 1", Description = "Description 1", Instructions="Instructions 1", ImageUrl="test.png", UserId = 1 };
             await _context.Recipes.AddAsync(recipe);
             await _context.SaveChangesAsync();
 
-            var result = await _recipeRepository.GetRecipeByIdAsync(recipe.Id);
+            var result = await _recipeRepository.GetRecipeByIdAsync(recipe.Id, 1);
 
             result.Should().NotBeNull();
             result!.Name.Should().Be("Recipe 1");
@@ -78,7 +80,7 @@ namespace PhotoChef.Tests.Repositories
         [Fact]
         public async Task GetRecipeByIdAsync_ShouldReturnNull_WhenIdDoesNotExist()
         {
-            var result = await _recipeRepository.GetRecipeByIdAsync(999);
+            var result = await _recipeRepository.GetRecipeByIdAsync(999, 1);
 
             result.Should().BeNull();
         }
@@ -86,7 +88,7 @@ namespace PhotoChef.Tests.Repositories
         [Fact]
         public async Task UpdateRecipeAsync_ShouldUpdateExistingRecipe()
         {
-            var recipe = new Recipe { Name = "Recipe 1", Description = "Description 1", Instructions = "Instructions 1", ImageUrl = "test.png" };
+            var recipe = new Recipe { Name = "Recipe 1", Description = "Description 1", Instructions = "Instructions 1", ImageUrl = "test.png", UserId = 1 };
             await _context.Recipes.AddAsync(recipe);
             await _context.SaveChangesAsync();
 
@@ -104,11 +106,11 @@ namespace PhotoChef.Tests.Repositories
         [Fact]
         public async Task DeleteRecipeAsync_ShouldRemoveRecipeFromDatabase()
         {
-            var recipe = new Recipe { Name = "Recipe to Delete", Description = "Description", Instructions = "Instructions 1", ImageUrl = "test.png" };
+            var recipe = new Recipe { Name = "Recipe to Delete", Description = "Description", Instructions = "Instructions 1", ImageUrl = "test.png", UserId = 1 };
             await _context.Recipes.AddAsync(recipe);
             await _context.SaveChangesAsync();
 
-            await _recipeRepository.DeleteRecipeAsync(recipe.Id);
+            await _recipeRepository.DeleteRecipeAsync(recipe.Id,1);
 
             _context.Recipes.Should().NotContain(r => r.Id == recipe.Id);
         }

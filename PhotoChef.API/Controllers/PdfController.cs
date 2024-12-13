@@ -33,7 +33,7 @@ namespace PhotoChef.API.Controllers
                 return Unauthorized("You do not have access to this recipe book.");
             }
 
-            var recipes = (await _recipeRepository.GetAllRecipesAsync())
+            var recipes = (await _recipeRepository.GetAllRecipesAsync(userId))
                 .Where(r => r.RecipeBookId == bookId)
                 .ToList();
 

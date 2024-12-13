@@ -16,6 +16,7 @@ QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=PhotoChef.db"));
 
+
 // Register repositories
 builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -27,7 +28,7 @@ builder.Services.AddScoped<TokenService>();
 // JWT configuration
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
-
+builder.WebHost.UseUrls("http://0.0.0.0:80");
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -50,8 +51,6 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
-
-// Add controllers
 builder.Services.AddControllers();
 
 // Add Swagger for API documentation
@@ -88,17 +87,23 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Configure middleware for development environment
-if (app.Environment.IsDevelopment())
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "PhotoChef API v1");
+    c.RoutePrefix = string.Empty;
+});
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication(); // Add JWT authentication middleware
+app.UseAuthentication(); 
 app.UseAuthorization();
 
-app.MapControllers(); // Map all controller routes
+app.MapControllers(); 
 
 app.Run();
